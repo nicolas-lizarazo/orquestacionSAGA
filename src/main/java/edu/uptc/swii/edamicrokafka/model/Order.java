@@ -9,13 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "`orders`")
+@Table(name = "orders")
 public class Order {
     @Id
     @Column(name = "id")
@@ -31,4 +30,3 @@ public class Order {
     @Column(name = "orderdate")
     private String orderDate;
 }
-

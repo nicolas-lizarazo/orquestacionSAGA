@@ -2,22 +2,37 @@ package edu.uptc.swii.edamicrokafka.service;
 
 import edu.uptc.swii.edamicrokafka.model.Login;
 import edu.uptc.swii.edamicrokafka.utils.JsonUtils;
+import edu.uptc.swii.edamicrokafka.utils.KafkaEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginEventConsumer {
+
     @Autowired
     private LoginService loginService;
 
-    @KafkaListener(topics = "addlogin_events", groupId = "login_group")
-    public void handleAdd(String json) {
-        loginService.save(JsonUtils.fromJson(json, Login.class));
-    }
+    // CAMBIO: un único listener para todos los eventos de Login
+    @KafkaListener(topics = "login_events", groupId = "login_group")
+    public void handleLoginEvent(String message) {
+        KafkaEvent event = JsonUtils.fromJson(message, KafkaEvent.class);
+        String operation = event.getOperation();
+        String payload = event.getPayload();
 
-    @KafkaListener(topics = "editlogin_events", groupId = "login_group")
-    public void handleEdit(String json) {
-        loginService.save(JsonUtils.fromJson(json, Login.class));
+        switch (operation) {
+            case "ADD":
+                loginService.save(JsonUtils.fromJson(payload, Login.class));
+                System.out.println("Login agregado.");
+                break;
+
+            case "EDIT":
+                loginService.save(JsonUtils.fromJson(payload, Login.class));
+                System.out.println("Login editado.");
+                break;
+
+            default:
+                System.out.println("Operación no soportada en login_events: " + operation);
+        }
     }
 }
