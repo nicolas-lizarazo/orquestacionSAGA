@@ -4,7 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "`customer`")
 public class Customer {
@@ -21,41 +29,4 @@ public class Customer {
     private String phone;
     @Column(name = "email")
     private String email;
-
-    public Customer() {
-    }
-
-    public Customer(String document, String firstname, String lastname,
-            String address, String phone, String email) {
-        this.document = document;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
-    }
-
-    public String getDocument() {
-        return document;
-    }
-
-    public void setDocument(String document) {
-        this.document = document;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
 }
