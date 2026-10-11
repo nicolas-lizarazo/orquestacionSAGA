@@ -29,4 +29,8 @@ public class Order {
     private double total;
     @Column(name = "orderdate")
     private String orderDate;
+    @Column(name = "status")
+    private  String status;
+    @Column(name = "statusreason")
+    private String statusReason;
 }

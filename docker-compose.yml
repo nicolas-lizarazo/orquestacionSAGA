@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+
   mysql:
     image: mysql:8.0
     container_name: mysql_microkafka
@@ -34,5 +33,54 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+  temporal-db:
+    image: postgres:15
+    container_name: temporal_db_microkafka
+    environment:
+      POSTGRES_USER: temporal
+      POSTGRES_PASSWORD: temporal
+    volumes:
+      - temporal_pg:/var/lib/postgresql/data
+
+  temporal:
+    image: temporalio/auto-setup:1.25.2
+    container_name: temporal_microkafka
+    depends_on:
+      - temporal-db
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: temporal
+      POSTGRES_PWD: temporal
+      POSTGRES_SEEDS: temporal-db
+    ports:
+      - "7233:7233"
+
+  temporal-ui:
+    image: temporalio/ui:2.31.2
+    container_name: temporal_ui_microkafka
+    depends_on:
+      - temporal
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+    ports:
+      - "8088:8080"
+
+  payment-db:
+    image: postgres:15
+    container_name: payment_db_microkafka
+    environment:
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+      POSTGRES_DB: paymentsdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - payment_pg:/var/lib/postgresql/data
+
+
 volumes:
   mysql_data:
+  temporal_pg:
+  payment_pg:
+
